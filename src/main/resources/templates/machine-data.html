@@ -1,0 +1,56 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head xmlns:th="http://www.w3.org/1999/xhtml">
+  <title>Server Monitors</title>
+  <style>
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+            .green {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+  />
+</head>
+
+<body>
+
+<div class="container">
+
+  <h3>Servers Data</h3>
+
+  <hr/>
+
+  <table class="table table-bordered table-striped">
+
+    <thead>
+    <tr>
+      <th>Machine Id</th>
+      <th>Cpu Usage</th>
+      <th>Ram Usage</th>
+      <th>Time</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="machineData: ${machineData}">
+      <td th:text="${machineData.machineId}"></td>
+      <td th:text="${machineData.cpuUsage}"></td>
+      <td th:text="${machineData.ramUsage}"></td>
+      <td th:text="${machineData.timestamp}"></td>
+      <td th:text="${machineData.flag}" th:class="${machineData.flag == 'Critical' ? 'red' : 'green'}"></td>
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+
+
+</body>
+
+</html>

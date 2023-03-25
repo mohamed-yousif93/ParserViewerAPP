@@ -1,0 +1,60 @@
+version: "3"
+services:
+  postgresdb:
+    image: postgres:latest
+    network_mode: bridge
+    container_name: postgresdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=parserdb
+    restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+  parsertool:
+    image: parsertool:1.0
+    network_mode: bridge
+    container_name: parsertool
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/parserdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: unless-stopped
+    depends_on:
+      - postgresdb
+    links:
+      - postgresdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  parserviewer:
+    image: parserviewer:1.0
+    network_mode: bridge
+    container_name: parserviewer
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/parserdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: unless-stopped
+    depends_on:
+      - postgresdb
+    links:
+      - postgresdb
+volumes:
+  postgres-data:
